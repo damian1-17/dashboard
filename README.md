@@ -1,73 +1,41 @@
-# React + TypeScript + Vite
+# MoraCero Dashboard (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio contiene el frontend del proyecto MoraCero. Está construido con React, TypeScript y Vite, y sirve como la interfaz web para la aplicación de dashboard de MoraCero.
 
-Currently, two official plugins are available:
+## Descripción
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Proyecto: `MoraCero Dashboard`
+- Rol: frontend
+- Stack principal: React + TypeScript + Vite
 
-## React Compiler
+## Estructura principal
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `src/`: código fuente de la aplicación
+- `src/components/`: componentes reutilizables de UI
+- `src/pages/`: páginas y vistas del dashboard
+- `src/api/`: cliente y llamadas a APIs
+- `public/`: activos estáticos
 
-## Expanding the ESLint configuration
+## Cómo ejecutar
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Instalar dependencias:
+   ```bash
+   npm install
+   ```
+2. Iniciar el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+3. Construir para producción:
+   ```bash
+   npm run build
+   ```
+4. Previsualizar la versión de producción:
+   ```bash
+   npm run preview
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Notas
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Este proyecto es solo el frontend de MoraCero. No incluye el backend ni la lógica del servidor.
+- El dashboard consume datos desde las APIs del proyecto MoraCero.
