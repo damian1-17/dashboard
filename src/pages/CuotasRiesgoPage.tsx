@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   AlertTriangle, Clock, ChevronLeft, ChevronRight,
   Wallet, Bell, Filter, Search, Shield, CalendarClock,
+  CheckCircle2, AlertCircle, XCircle, Target
 } from 'lucide-react';
 import { getCuotasEnRiesgo } from '../api/client';
 import type { CuotasRiesgoResponse, CuotaRiesgo } from '../types';
@@ -59,15 +60,15 @@ const CalBadge: React.FC<{ cal: string }> = ({ cal }) => {
 
 // ─── Prioridad badge ──────────────────────────────────────────────────────────
 const PrioBadge: React.FC<{ p: string }> = ({ p }) => {
-  const map: Record<string, [string, string, string]> = {
-    'CRÍTICA': ['🔴','#b91c1c','#fee2e2'],
-    'ALTA':    ['🟠','#c2410c','#ffedd5'],
-    'MEDIA':   ['🟡','#92400e','#fef3c7'],
-    'BAJA':    ['🟢','#15803d','#dcfce7'],
+  const map: Record<string, [React.ReactNode, string, string]> = {
+    'CRÍTICA': [<XCircle size={12} />, '#b91c1c', '#fee2e2'],
+    'ALTA':    [<AlertTriangle size={12} />, '#c2410c', '#ffedd5'],
+    'MEDIA':   [<AlertCircle size={12} />, '#92400e', '#fef3c7'],
+    'BAJA':    [<CheckCircle2 size={12} />, '#15803d', '#dcfce7'],
   };
-  const [icon, color, bg] = map[p] ?? ['⚪','#64748b','#f1f5f9'];
+  const [icon, color, bg] = map[p] ?? [<AlertCircle size={12} />, '#64748b', '#f1f5f9'];
   return (
-    <span style={{ background: bg, color, borderRadius: 20, padding: '3px 10px', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: bg, color, borderRadius: 20, padding: '3px 10px', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>
       {icon} {p}
     </span>
   );
@@ -142,8 +143,8 @@ const CuotasRiesgoPage: React.FC = () => {
           }}>
             <Bell size={20} style={{ flexShrink: 0, animation: 'pulse 1.4s ease-in-out infinite' }} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>
-                ⚡ {r!.totalCritica} cuota{r!.totalCritica !== 1 ? 's' : ''} con prioridad CRÍTICA — requieren contacto HOY
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 14 }}>
+                <AlertTriangle size={16} /> {r!.totalCritica} cuota{r!.totalCritica !== 1 ? 's' : ''} con prioridad CRÍTICA — requieren contacto HOY
               </div>
               <div style={{ fontSize: 12, opacity: .85 }}>
                 Socios con calificación C/D/E cuya cuota vence en menos de 7 días. El riesgo de formalización en mora es muy alto.
@@ -205,8 +206,9 @@ const CuotasRiesgoPage: React.FC = () => {
                       key={v}
                       className={`chip ${ventana === v ? (v === 7 ? 'red active' : v === 15 ? 'orange active' : 'active') : ''}`}
                       onClick={() => setVentana(v)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                     >
-                      {v === 7 ? '🔴 7 días' : v === 15 ? '🟠 15 días' : '🟡 30 días'}
+                      {v === 7 ? <XCircle size={12} /> : v === 15 ? <AlertTriangle size={12} /> : <AlertCircle size={12} />} {v} días
                     </button>
                   ))}
                 </div>
@@ -314,11 +316,13 @@ const CuotasRiesgoPage: React.FC = () => {
                       </td>
                       <td>
                         {c.diasMora > 0 ? (
-                          <span style={{ color: '#b91c1c', fontWeight: 700, fontSize: 12 }}>
-                            ⚠️ {Math.floor(c.diasMora)}d · {c.cuotasAtrasadas > 0 ? `${Math.floor(c.cuotasAtrasadas)} cuota${c.cuotasAtrasadas > 1 ? 's' : ''}` : ''}
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#b91c1c', fontWeight: 700, fontSize: 12 }}>
+                            <AlertTriangle size={12} /> {Math.floor(c.diasMora)}d · {c.cuotasAtrasadas > 0 ? `${Math.floor(c.cuotasAtrasadas)} cuota${c.cuotasAtrasadas > 1 ? 's' : ''}` : ''}
                           </span>
                         ) : (
-                          <span style={{ color: '#15803d', fontSize: 12 }}>✓ Al día</span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#15803d', fontSize: 12 }}>
+                            <CheckCircle2 size={12} /> Al día
+                          </span>
                         )}
                       </td>
                       <td>
@@ -368,18 +372,18 @@ const CuotasRiesgoPage: React.FC = () => {
 
         {/* Guía de interpretación */}
         <div className="card" style={{ padding: '16px 20px' }}>
-          <div className="section-title" style={{ fontSize: 13, marginBottom: 10 }}>
-            🎯 Guía de prioridades de contacto
+          <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, marginBottom: 10 }}>
+            <Target size={16} /> Guía de prioridades de contacto
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
             {[
-              { icon: '🔴', label: 'CRÍTICA',  color: '#b91c1c', bg: '#fee2e2', desc: 'Calificación C/D/E con cuota que vence en 7 días o ya vencida. Contacto INMEDIATO hoy.' },
-              { icon: '🟠', label: 'ALTA',     color: '#c2410c', bg: '#ffedd5', desc: 'Calificación B2 o superior con cuota en 15 días. Llamada en los próximos 2 días.' },
-              { icon: '🟡', label: 'MEDIA',    color: '#92400e', bg: '#fef3c7', desc: 'Calificación A3/B1 con cuota en 30 días. Recordatorio preventivo por mensaje o email.' },
-              { icon: '🟢', label: 'BAJA',     color: '#15803d', bg: '#dcfce7', desc: 'Socios con buen historial. Monitorear sin acción urgente necesaria.' },
+              { icon: <XCircle size={14} />, label: 'CRÍTICA',  color: '#b91c1c', bg: '#fee2e2', desc: 'Calificación C/D/E con cuota que vence en 7 días o ya vencida. Contacto INMEDIATO hoy.' },
+              { icon: <AlertTriangle size={14} />, label: 'ALTA',     color: '#c2410c', bg: '#ffedd5', desc: 'Calificación B2 o superior con cuota en 15 días. Llamada en los próximos 2 días.' },
+              { icon: <AlertCircle size={14} />, label: 'MEDIA',    color: '#92400e', bg: '#fef3c7', desc: 'Calificación A3/B1 con cuota en 30 días. Recordatorio preventivo por mensaje o email.' },
+              { icon: <CheckCircle2 size={14} />, label: 'BAJA',     color: '#15803d', bg: '#dcfce7', desc: 'Socios con buen historial. Monitorear sin acción urgente necesaria.' },
             ].map((item) => (
               <div key={item.label} style={{ borderLeft: `3px solid ${item.color}`, background: item.bg, borderRadius: 8, padding: '10px 14px' }}>
-                <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{item.icon} {item.label}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{item.icon} {item.label}</div>
                 <div style={{ fontSize: 11, color: 'var(--gray-600)', lineHeight: 1.5 }}>{item.desc}</div>
               </div>
             ))}

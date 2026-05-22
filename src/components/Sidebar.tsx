@@ -10,6 +10,7 @@ import {
   PieChart,
   UserMinus,
   LifeBuoy,
+  Sparkles,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,8 +21,8 @@ interface SidebarProps {
 const navItems = [
   { id: 'risk',          icon: AlertTriangle,  label: 'Riesgo de Morosidad',   badge: null },
   { id: 'credits',       icon: CreditCard,     label: 'Créditos Activos',       badge: null },
-  { id: 'predictions',   icon: Zap,            label: 'Predicción de Mora',     badge: '✨' },
-  { id: 'cuotas',          icon: CalendarClock,  label: 'Cuotas en Riesgo',       badge: null },
+  { id: 'predictions',   icon: Zap,            label: 'Predicción de Mora',     badge: <Sparkles size={12} /> },
+  { id: 'cuotas',        icon: CalendarClock,  label: 'Cuotas en Riesgo',       badge: null },
   { id: 'retencion',       icon: UserMinus,      label: 'Retención y Fugas',      badge: null },
   { id: 'recuperabilidad', icon: LifeBuoy,       label: 'Recuperabilidad',        badge: null },
   { id: 'concentracion',   icon: PieChart,       label: 'Concentración',          badge: null },

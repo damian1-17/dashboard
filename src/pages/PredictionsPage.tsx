@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   AlertTriangle, Clock, TrendingUp, Wallet, ChevronLeft,
   ChevronRight, Search, Filter, Users, Shield,
+  XCircle, AlertCircle, BookOpen
 } from 'lucide-react';
 import { getPredictions } from '../api/client';
 import type { PredictionsResponse, SocioPrediccion } from '../types';
@@ -12,10 +13,10 @@ import Topbar from '../components/Topbar';
 const fmtCurrency = (n: number) =>
   new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(n);
 
-const HORIZONTE_META: Record<string, { color: string; bg: string; border: string; label: string; icon: string; urgencia: string }> = {
-  '10 días': { color: '#b91c1c', bg: '#fee2e2', border: '#dc2626', label: '🔴 10 días',  icon: '🔴', urgencia: 'Urgente' },
-  '20 días': { color: '#c2410c', bg: '#ffedd5', border: '#ea580c', label: '🟠 20 días',  icon: '🟠', urgencia: 'Alertar' },
-  '30 días': { color: '#92400e', bg: '#fef3c7', border: '#ca8a04', label: '🟡 30 días',  icon: '🟡', urgencia: 'Monitorear' },
+const HORIZONTE_META: Record<string, { color: string; bg: string; border: string; label: string; icon: React.ReactNode; urgencia: string }> = {
+  '10 días': { color: '#b91c1c', bg: '#fee2e2', border: '#dc2626', label: '🔴 10 días',  icon: <XCircle size={14} />, urgencia: 'Urgente' },
+  '20 días': { color: '#c2410c', bg: '#ffedd5', border: '#ea580c', label: '🟠 20 días',  icon: <AlertTriangle size={14} />, urgencia: 'Alertar' },
+  '30 días': { color: '#92400e', bg: '#fef3c7', border: '#ca8a04', label: '🟡 30 días',  icon: <AlertCircle size={14} />, urgencia: 'Monitorear' },
 };
 
 const ProbBar: React.FC<{ prob: number; color: string }> = ({ prob, color }) => (
@@ -98,8 +99,8 @@ const PredictionsPage: React.FC = () => {
           }}>
             <AlertTriangle size={20} style={{ flexShrink: 0 }} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>
-                ⚠️ Atención inmediata requerida: {r!.total10d} socios podrían caer en mora en los próximos 10 días
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 14 }}>
+                <AlertTriangle size={16} /> Atención inmediata requerida: {r!.total10d} socios podrían caer en mora en los próximos 10 días
               </div>
               <div style={{ fontSize: 12, opacity: .85 }}>
                 Monto en riesgo inmediato: {fmtCurrency(r!.montoEnRiesgo10d)} — Se recomienda contactar a estos socios hoy
@@ -165,10 +166,11 @@ const PredictionsPage: React.FC = () => {
                         h === '20 días' ? 'orange active' : 'yellow active'
                       ) : ''}`}
                       onClick={() => { setHorizonte(h); setSearch(''); }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                     >
-                      {h === '10 días' ? '🔴 10 días' :
-                       h === '20 días' ? '🟠 20 días' :
-                       h === '30 días' ? '🟡 30 días' : h}
+                      {h === '10 días' ? <XCircle size={12} /> :
+                       h === '20 días' ? <AlertTriangle size={12} /> :
+                       h === '30 días' ? <AlertCircle size={12} /> : null} {h}
                     </button>
                   ))}
                 </div>
@@ -314,23 +316,23 @@ const PredictionsPage: React.FC = () => {
 
         {/* Leyenda del modelo */}
         <div className="card" style={{ padding: '16px 20px' }}>
-          <div className="section-title" style={{ fontSize: 13, marginBottom: 10 }}>
-            📖 ¿Cómo funciona la predicción?
+          <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, marginBottom: 10 }}>
+            <BookOpen size={16} /> ¿Cómo funciona la predicción?
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
             {[
               {
-                icon: '🔴', title: 'Próximos 10 días',
+                icon: <XCircle size={14} />, title: 'Próximos 10 días',
                 desc: 'El socio ya tiene días de retraso activos (1-20 días) y su probabilidad de cruzar el umbral formal de mora es alta. Requiere contacto inmediato.',
                 border: '#dc2626', bg: '#fee2e2',
               },
               {
-                icon: '🟠', title: 'Próximos 20 días',
+                icon: <AlertTriangle size={14} />, title: 'Próximos 20 días',
                 desc: 'Sin mora formal aún, pero el ahorro cayó abruptamente y hay inactividad transaccional. Las señales de deterioro combinadas predicen una caída próxima.',
                 border: '#ea580c', bg: '#ffedd5',
               },
               {
-                icon: '🟡', title: 'Próximos 30 días',
+                icon: <AlertCircle size={14} />, title: 'Próximos 30 días',
                 desc: 'Riesgo compuesto moderado-alto: score elevado, presión externa y factores socioeconómicos desfavorables. Monitorear y prevenir proactivamente.',
                 border: '#ca8a04', bg: '#fef3c7',
               },
@@ -339,7 +341,7 @@ const PredictionsPage: React.FC = () => {
                 borderLeft: `3px solid ${item.border}`, background: item.bg,
                 borderRadius: 8, padding: '10px 14px',
               }}>
-                <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 5 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 13, marginBottom: 5 }}>
                   {item.icon} {item.title}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.5 }}>

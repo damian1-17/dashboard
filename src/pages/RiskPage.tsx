@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Search, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
-         AlertTriangle, Wallet, Users, TrendingDown, Filter } from 'lucide-react';
+         AlertTriangle, Wallet, Users, TrendingDown, Filter,
+         Activity, Coins, BarChart3, AlertCircle, Home, Briefcase, Landmark, Building, Globe } from 'lucide-react';
 import { getDelinquencyRisk } from '../api/client';
 import type { DelinquencyRiskResponse, SocioRiesgo } from '../types';
 import KpiCard from '../components/KpiCard';
@@ -34,40 +35,40 @@ const scoreColor = (score: number) => {
   return '#dc2626';
 };
 
-const DIM_META: Record<string, { label: string; icon: string; descripcion: string }> = {
+const DIM_META: Record<string, { label: string; icon: React.ReactNode; descripcion: string }> = {
   'Comportamiento Transaccional': {
     label:       'Actividad en la Cuenta',
-    icon:        '🔄',
+    icon:        <Activity size={14} />,
     descripcion: '¿El socio usa su cuenta con regularidad? Mide cuántos movimientos (retiros, depósitos) ha realizado recientemente. Poca actividad puede indicar dificultades económicas.',
   },
   'Estabilidad de Ahorro': {
     label:       'Evolución del Ahorro',
-    icon:        '💰',
+    icon:        <Coins size={14} />,
     descripcion: '¿Sus ahorros están creciendo o cayendo? Compara el saldo actual con el anterior. Una caída brusca es una señal de alerta temprana.',
   },
   'Historial Crediticio': {
     label:       'Cumplimiento de Créditos',
-    icon:        '📊',
+    icon:        <BarChart3 size={14} />,
     descripcion: '¿Paga puntualmente sus cuotas? Considera la calificación de riesgo, los días de atraso y el número de cuotas pendientes. Es el factor más importante del modelo.',
   },
   'Señales de Deterioro': {
     label:       'Alertas Combinadas',
-    icon:        '⚠️',
+    icon:        <AlertCircle size={14} />,
     descripcion: 'Detecta cuando varios problemas ocurren al mismo tiempo: mora activa + ahorros cayendo + inactividad. La combinación eleva significativamente el riesgo.',
   },
   'Perfil Socioeconómico': {
     label:       'Situación Personal y Familiar',
-    icon:        '🏠',
+    icon:        <Home size={14} />,
     descripcion: '¿Cuánto gana y gasta el socio? ¿Cuántas personas dependen de él/ella? Incluye ingresos, gastos, tipo de vivienda y nivel educativo. Más dependientes y gastos altos elevan el riesgo.',
   },
   'Actividad Económica': {
     label:       'Trabajo y Destino del Crédito',
-    icon:        '🏢',
+    icon:        <Briefcase size={14} />,
     descripcion: '¿A qué sector pertenece el trabajo del socio y para qué usó el crédito? Sectores como agricultura o pesca tienen ingresos más variables. Créditos de consumo son más riesgosos que los productivos.',
   },
   'Garantías y Patrimonio': {
     label:       'Respaldo del Crédito',
-    icon:        '🏦',
+    icon:        <Landmark size={14} />,
     descripcion: '¿Qué bienes respaldan el crédito? Una garantía hipotecaria (casa) es la más sólida. Si el valor de la garantía supera el monto prestado, el riesgo es menor.',
   },
 };
@@ -111,7 +112,7 @@ const DimCard: React.FC<{ d: any, meta: any, colorPrimary: string }> = ({ d, met
       title="Clic para ver descripción"
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-700)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--gray-700)' }}>
           {meta?.icon} {meta?.label ?? d.dimension}
         </div>
         <span style={{ fontSize: 10, fontWeight: 700, color: lbl.color, background: lbl.bg, borderRadius: 12, padding: '2px 7px', whiteSpace: 'nowrap' }}>
@@ -423,11 +424,11 @@ const RiskPage: React.FC = () => {
                               </div>
                             </div>
                             <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-                              <span style={{ fontSize: 10, background: '#f0fdf4', color: '#15803d', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>
-                                🏦 {s.scoreInterno?.toFixed(0) ?? '—'}
+                              <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, background: '#f0fdf4', color: '#15803d', borderRadius: 4, padding: '2px 6px', fontWeight: 600 }}>
+                                <Building size={10} /> {s.scoreInterno?.toFixed(0) ?? '—'}
                               </span>
-                              <span style={{ fontSize: 10, background: '#eff6ff', color: '#2563eb', borderRadius: 4, padding: '1px 5px', fontWeight: 600 }}>
-                                🌍 {s.scoreExterno?.toFixed(0) ?? '—'}
+                              <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, background: '#eff6ff', color: '#2563eb', borderRadius: 4, padding: '2px 6px', fontWeight: 600 }}>
+                                <Globe size={10} /> {s.scoreExterno?.toFixed(0) ?? '—'}
                               </span>
                             </div>
                           </td>
@@ -465,7 +466,9 @@ const RiskPage: React.FC = () => {
                               {/* Internas */}
                               <div style={{ marginBottom: 12 }}>
                                 <div style={{ fontSize: 11, fontWeight: 700, color: '#15803d', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-                                  <span style={{ background: '#dcfce7', padding: '3px 10px', borderRadius: 20 }}>🏦 Factores Internos de la Cooperativa &mdash; Score {s.scoreInterno?.toFixed(1) ?? '—'}/100</span>
+                                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#dcfce7', padding: '3px 10px', borderRadius: 20 }}>
+                                    <Building size={12} /> Factores Internos de la Cooperativa &mdash; Score {s.scoreInterno?.toFixed(1) ?? '—'}/100
+                                  </span>
                                 </div>
                                 <div className="dim-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
                                   {s.dimensiones.filter(d => d.tipo === 'Interna').map((d) => (
@@ -481,7 +484,9 @@ const RiskPage: React.FC = () => {
                               {/* Externas */}
                               <div>
                                 <div style={{ fontSize: 11, fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-                                  <span style={{ background: '#eff6ff', padding: '3px 10px', borderRadius: 20 }}>🌍 Factores Externos del Socio &mdash; Score {s.scoreExterno?.toFixed(1) ?? '—'}/100</span>
+                                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#eff6ff', padding: '3px 10px', borderRadius: 20 }}>
+                                    <Globe size={12} /> Factores Externos del Socio &mdash; Score {s.scoreExterno?.toFixed(1) ?? '—'}/100
+                                  </span>
                                 </div>
                                 <div className="dim-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
                                   {s.dimensiones.filter(d => d.tipo === 'Externa').map((d) => (

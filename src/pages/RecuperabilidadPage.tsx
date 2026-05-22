@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   LifeBuoy, Search, Filter, AlertTriangle, Shield, Clock,
-  DollarSign, Activity, Target, ChevronLeft, ChevronRight
+  DollarSign, Activity, Target, ChevronLeft, ChevronRight,
+  CheckCircle2, AlertCircle, XCircle, HelpCircle
 } from 'lucide-react';
 import { getRecuperabilidadCartera } from '../api/client';
 import type { RecuperabilidadResponse, SocioRecuperable } from '../types';
@@ -30,14 +31,14 @@ const RecupBar: React.FC<{ prob: number; segmento: string }> = ({ prob, segmento
 
 // ─── Segmento Badge ─────────────────────────────────────────────────────────────
 const SegmentoBadge: React.FC<{ s: string }> = ({ s }) => {
-  const map: Record<string, [string, string, string]> = {
-    'Alta':  ['🟢', '#15803d', '#dcfce7'],
-    'Media': ['🟡', '#b45309', '#fef3c7'],
-    'Baja':  ['🔴', '#b91c1c', '#fee2e2'],
+  const map: Record<string, [React.ReactNode, string, string]> = {
+    'Alta':  [<CheckCircle2 size={12} />, '#15803d', '#dcfce7'],
+    'Media': [<AlertCircle size={12} />, '#b45309', '#fef3c7'],
+    'Baja':  [<XCircle size={12} />, '#b91c1c', '#fee2e2'],
   };
-  const [icon, color, bg] = map[s] ?? ['⚪', '#64748b', '#f1f5f9'];
+  const [icon, color, bg] = map[s] ?? [<HelpCircle size={12} />, '#64748b', '#f1f5f9'];
   return (
-    <span style={{ background: bg, color, borderRadius: 20, padding: '4px 10px', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: bg, color, borderRadius: 20, padding: '4px 10px', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>
       {icon} {s}
     </span>
   );
@@ -110,10 +111,10 @@ const RecuperabilidadPage: React.FC = () => {
           }}>
             <Target size={24} style={{ flexShrink: 0, animation: 'pulse 2s ease-in-out infinite' }} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>
-                🎯 {r!.totalAlta} casos de Alta Recuperabilidad identificados
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 14 }}>
+                <Target size={16} /> {r!.totalAlta} casos de Alta Recuperabilidad identificados
               </div>
-              <div style={{ fontSize: 12, opacity: .9 }}>
+              <div style={{ fontSize: 12, opacity: .9, marginTop: 4 }}>
                 Prioriza la gestión de cobranza en estos socios para recuperar <strong>{fmtUSD(r!.montoAlta)}</strong> rápidamente.
               </div>
             </div>
@@ -167,8 +168,9 @@ const RecuperabilidadPage: React.FC = () => {
                       key={s}
                       className={`chip ${segmento === s ? (s === 'Alta' ? 'green active' : s === 'Media' ? 'orange active' : s === 'Baja' ? 'red active' : 'active') : ''}`}
                       onClick={() => setSegmento(s)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                     >
-                      {s === 'Alta' ? '🟢 Alta' : s === 'Media' ? '🟡 Media' : s === 'Baja' ? '🔴 Baja' : s}
+                      {s === 'Alta' ? <CheckCircle2 size={12} /> : s === 'Media' ? <AlertCircle size={12} /> : s === 'Baja' ? <XCircle size={12} /> : null} {s}
                     </button>
                   ))}
                 </div>

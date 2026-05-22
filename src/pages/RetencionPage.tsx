@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Users, UserMinus, ChevronLeft, ChevronRight, Search, 
-  Filter, AlertTriangle, Shield, Clock, Smartphone,
-  DollarSign, Activity
+  UserMinus, Search, Filter, AlertTriangle, Users, TrendingDown,
+  Activity, Calendar, DollarSign, AlertOctagon, CheckCircle2, AlertCircle, XCircle, ChevronLeft, ChevronRight, Smartphone, Clock, Shield
 } from 'lucide-react';
 import { getRetencionSocios } from '../api/client';
 import type { RetencionResponse, SocioRetencion } from '../types';
@@ -37,21 +36,21 @@ const FugaBar: React.FC<{ prob: number; riesgo: string }> = ({ prob, riesgo }) =
 
 // ─── Riesgo Badge ─────────────────────────────────────────────────────────────
 const RiesgoBadge: React.FC<{ r: string }> = ({ r }) => {
-  const map: Record<string, [string, string, string]> = {
-    'Alto':  ['🔴', '#b91c1c', '#fee2e2'],
-    'Medio': ['🟡', '#b45309', '#fef3c7'],
-    'Bajo':  ['🟢', '#15803d', '#dcfce7'],
+  const map: Record<string, [JSX.Element, string, string]> = {
+    'Alto':  [<XCircle size={12} />, '#b91c1c', '#fee2e2'],
+    'Medio': [<AlertCircle size={12} />, '#b45309', '#fef3c7'],
+    'Bajo':  [<CheckCircle2 size={12} />, '#15803d', '#dcfce7'],
   };
-  const [icon, color, bg] = map[r] ?? ['⚪', '#64748b', '#f1f5f9'];
+  const [icon, color, bg] = map[r] ?? [<AlertCircle size={12} />, '#64748b', '#f1f5f9'];
   return (
-    <span style={{ background: bg, color, borderRadius: 20, padding: '4px 10px', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>
+    <span style={{ background: bg, color, borderRadius: 20, padding: '4px 10px', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
       {icon} {r}
     </span>
   );
 };
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const RIESGOS = ['Todos', 'Alto', 'Medio'];
+const RIESGOS = ['Todos', 'Alto', 'Medio', 'Bajo'];
 const LIMITS  = [10, 20, 50];
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -116,10 +115,10 @@ const RetencionPage: React.FC = () => {
           }}>
             <UserMinus size={24} style={{ flexShrink: 0, animation: 'pulse 2s ease-in-out infinite' }} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>
-                ⚠️ Riesgo de Fuga: {r!.totalRiesgoAlto} socios en estado crítico
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: 14 }}>
+                <AlertOctagon size={16} /> {r!.totalRiesgoAlto} socios con Riesgo Alto de Fuga
               </div>
-              <div style={{ fontSize: 12, opacity: .9 }}>
+              <div style={{ fontSize: 12, opacity: .9, marginTop: 4 }}>
                 Presentan inactividad extrema, saldos vaciados y falta de vinculación de cartera. Se recomienda contacto inmediato.
               </div>
             </div>
@@ -168,13 +167,14 @@ const RetencionPage: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <Filter size={13} style={{ color: 'var(--gray-400)' }} />
                 <div className="filter-chips">
-                  {RIESGOS.map((r) => (
+                  {RIESGOS.map((s) => (
                     <button
-                      key={r}
-                      className={`chip ${riesgo === r ? (r === 'Alto' ? 'red active' : r === 'Medio' ? 'orange active' : 'active') : ''}`}
-                      onClick={() => setRiesgo(r)}
+                      key={s}
+                      className={`chip ${riesgo === s ? (s === 'Bajo' ? 'green active' : s === 'Medio' ? 'orange active' : s === 'Alto' ? 'red active' : 'active') : ''}`}
+                      onClick={() => setRiesgo(s)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                     >
-                      {r === 'Alto' ? '🔴 Alto' : r === 'Medio' ? '🟡 Medio' : r}
+                      {s === 'Bajo' ? <CheckCircle2 size={12} /> : s === 'Medio' ? <AlertCircle size={12} /> : s === 'Alto' ? <XCircle size={12} /> : null} {s}
                     </button>
                   ))}
                 </div>
