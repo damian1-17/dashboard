@@ -20,19 +20,19 @@ Este repositorio contiene el frontend del proyecto MoraCero. Está construido co
 
 1. Instalar dependencias:
    ```bash
-   npm install
+   pnpm install
    ```
 2. Iniciar el servidor de desarrollo:
    ```bash
-   npm run dev
+   pnpm dev
    ```
 3. Construir para producción:
    ```bash
-   npm run build
+   pnpm build
    ```
 4. Previsualizar la versión de producción:
    ```bash
-   npm run preview
+   pnpm preview
    ```
 
 ## Notas
